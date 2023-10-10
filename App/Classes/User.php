@@ -2,7 +2,7 @@
 namespace App\Classes;
 use PDO;
 use App\Traits\UserValidation;
-
+use Exception;
 class User extends Database{
     use UserValidation;
     private $fullname,$email,$hashed_password,$profile_img, $room_no, $ext;

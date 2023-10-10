@@ -2,7 +2,7 @@
 namespace App\Classes;
 use PDO;
 use App\Traits\ProductValidation;
-
+use Exception;
 class Product extends Database{
     use ProductValidation;
     private $name,$price,$img;
