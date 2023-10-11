@@ -27,12 +27,12 @@
               </a>
              
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a class="nav-link" href="checks.php">
                 <span class="menu-title">Checks</span>
                 <i class="mdi mdi-chart-bar menu-icon"></i>
               </a>
-            </li>
+            </li> -->
          
           
           </ul>
