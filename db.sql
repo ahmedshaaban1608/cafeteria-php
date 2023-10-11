@@ -18,7 +18,8 @@ CREATE TABLE product (
     name VARCHAR(50) NOT NULL,
     price INT UNSIGNED NOT NULL,
     img VARCHAR(255) NOT NULL,
-    is_available BOOLEAN DEFAULT TRUE
+    is_available BOOLEAN DEFAULT TRUE,
+     is_delete BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE product_order (
