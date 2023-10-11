@@ -18,6 +18,10 @@ class Product extends Database{
       $result= $this->runDML("SELECT * FROM product where is_delete = false order by id desc;");
       return $result->fetchAll(PDO::FETCH_ASSOC);
   }
+  public function getAllAvailable(){
+    $result= $this->runDML("SELECT * FROM product where is_delete = false and is_available = true order by id desc;");
+    return $result->fetchAll(PDO::FETCH_ASSOC);
+}
   public function countAll(){
     $result= $this->runDML("SELECT count(*) as 'count' FROM product where is_delete = false;");
     return $result->fetch(PDO::FETCH_ASSOC);

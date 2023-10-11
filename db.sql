@@ -22,7 +22,7 @@ CREATE TABLE product (
 );
 
 CREATE TABLE product_order (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     status ENUM('done', 'processing', 'out of delivery') DEFAULT 'processing',
     order_date TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
@@ -55,19 +55,15 @@ END;
 
 DELIMITER ;
 
-
-CREATE VIEW order_details_view AS
+CREATE VIEW orders_view AS
 SELECT
     po.id AS order_id,
-    po.user_id,
-    u.fullname AS user_fullname,
-    p.name AS product_name,
-    p.price AS product_price,
-    oi.quantity AS product_quantity,
-    po.status AS order_status,
     po.order_date,
-    po.notes,
-    r.room_no AS room_number
+    u.fullname AS user_name,
+    po.status,
+    r.room_no,
+    u.ext,
+    SUM(p.price * oi.quantity) AS total_price
 FROM
     product_order po
 JOIN
@@ -77,4 +73,6 @@ JOIN
 JOIN
     product p ON oi.product_id = p.id
 JOIN
-    room r ON po.room_no = r.room_no;
+    room r ON po.room_no = r.room_no
+GROUP BY
+    po.id;

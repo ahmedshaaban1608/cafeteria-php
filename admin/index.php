@@ -3,6 +3,7 @@
  require_once '../vendor/autoload.php';
 use App\Classes\User;
 use App\Classes\Product;
+use App\Classes\Order;
 if (isset($_SESSION['user'])) {
   
   $loggedUser = $_SESSION['user'];
@@ -18,6 +19,9 @@ $user= new user();
 $countUsers = $user->countAll();
 $product= new Product();
 $countProducts = $product->countAll();
+$order= new Order();
+$countOrder = $order->countAll();
+$orders = $order->getAllProcessing();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -63,10 +67,9 @@ $countProducts = $product->countAll();
                 <div class="card bg-gradient-danger card-img-holder text-white">
                   <div class="card-body">
                     <img src="../assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
-                    <h4 class="font-weight-normal mb-3">Weekly Sales <i class="mdi mdi-chart-line mdi-24px float-right"></i>
+                    <h4 class="font-weight-normal mb-3">Orders <i class="mdi mdi-chart-line mdi-24px float-right"></i>
                     </h4>
-                    <h2 class="mb-5">$ 15,0000</h2>
-                    <h6 class="card-text">Increased by 60%</h6>
+                    <h2 class="mb-5"><?php echo $countOrder['count']; ?></h2>
                   </div>
                 </div>
               </div>
@@ -92,34 +95,73 @@ $countProducts = $product->countAll();
               </div>
             </div>
            
-        
+       
             <div class="row">
-        <div class="col-12 bg-white py-3 table-responsive">
+            <?php foreach ($orders as $orderData) { ?>
+        <div class="col-12 bg-white py-3 table-responsive mt-3">
         <table class="table table-striped">
                       <thead>
                         <tr>
                           <th>Order Date </th>
-                          <th> Status </th>
-                          <th> Amount </th>
-                          <th style="width:200px!important;"> Action </th>
+                          <th> User name </th>
+                          <th>Room no</th>
+                          <th>Ext</th>
+                          <th> Total price </th>
+                          <th> Action </th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr>
-                          <td class="py-1">
-                            <img src="../assets/images/faces-clipart/pic-1.png" alt="image" />
-                          </td>
-                          <td> Herman Beck </td>
                         
-                          <td> $ 77.99 </td>
-                      <td>                       <button type="button" class="btn btn-gradient-primary me-2">Show</button>                       <button type="button" class="btn btn-gradient-warning  text-dark">Delete</button>
+                                          
+                        <tr>
+                          <td>
+                            <?php echo $orderData['order_date']; ?>
+                          </td>
+                          <td> <?php echo $orderData['user_name']; ?></td>
+                          <td> <?php echo $orderData['room_no']; ?></td>
+                          <td> <?php echo $orderData['ext']; ?></td>
+                          <td> <?php echo $orderData['total_price']. ' EGP'; ?></td>
+
+                      <td>
+                        <button type="button" onClick="deliverOrder(<?php echo $orderData['order_id']; ?>)"class="btn btn-gradient-danger">Deliver</button>
+                        
+                     
 
 
 </td> </tr>
 
                       </tbody>
                     </table>
+                    <h3 class="text-center my-4">Order Items</h3>
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>Product name </th>
+                          <th> Item price </th>
+                          <th> Quantity </th>
+                          <th> SubTotal price </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <?php 
+                        $id = $orderData['order_id'];
+                        $orderItems = $order->showOrderItems($id);
+                        foreach ($orderItems as $item) { ?>
+                                          
+                        <tr>
+                          <td>
+                            <?php echo $item['name']; ?>
+                          </td>
+                          <td> <?php echo $item['price']; ?></td>
+                        
+                          <td> <?php echo $item['quantity']; ?></td>
+                          <td> <?php echo ($item['quantity']*$item['price']). ' EGP'; ?></td>
+ </tr>
+<?php } ?>
+                      </tbody>
+                    </table>
          </div>
+         <?php } ?>
         </div>
           
           </div>
@@ -149,5 +191,10 @@ $countProducts = $product->countAll();
     <script src="../assets/js/dashboard.js"></script>
     <script src="../assets/js/todolist.js"></script>
     <!-- End custom js for this page -->
+   <Script> function deliverOrder(orderid) {
+  if(confirm('Are you sure?')){
+    window.location.href = 'deliverOrder.php?id=' + orderid;
+  }
+}</script>
   </body>
 </html>

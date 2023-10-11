@@ -13,8 +13,12 @@ if (isset($_SESSION['user'])) {
   }
 require_once 'vendor/autoload.php';
 use App\Classes\Order;
+if(isset($_GET['id'])){
+  $id = $_GET['id'];
+}
 $order = new Order();
-$orders = $order->getAll();
+$orderData = $order->show($id);
+$orderItems = $order->showOrderItems($id);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -51,40 +55,60 @@ $orders = $order->getAll();
               <h3 class="page-title">
                 <span class="page-title-icon bg-gradient-primary text-white me-2">
                   <i class="mdi mdi-home"></i>
-                </span> My orders
+                </span> My order
               </h3>
            
             </div>
          <div class="row">
         <div class="col-12 bg-white py-3 table-responsive">
+          <table class="table  table-striped">
+            <tr>
+              <th>User name</th>
+              <td><?php echo $orderData['user_name']; ?></td>
+            </tr>
+            <tr>
+              <th>Date</th>
+              <td><?php echo $orderData['order_date']; ?></td>
+            </tr>
+            <tr>
+              <th>Room no</th>
+              <td><?php echo $orderData['room_no']; ?></td>
+            </tr>
+            <tr>
+              <th>Ext</th>
+              <td><?php echo $orderData['ext']; ?></td>
+            </tr>
+            <tr>
+              <th>Status</th>
+              <td><?php echo $orderData['status']; ?></td>
+            </tr>
+            <tr>
+              <th>Total Price</th>
+              <td><?php echo $orderData['total_price']. ' EGP'; ?></td>
+            </tr>
+          </table>
+          <h3 class="text-center my-4">Order Items</h3>
         <table class="table table-striped">
                       <thead>
                         <tr>
-                          <th>Order Date </th>
-                          <th> Status </th>
-                          <th> Total price </th>
-                          <th style="width:200px!important;"> Action </th>
+                          <th>Product name </th>
+                          <th> Item price </th>
+                          <th> Quantity </th>
+                          <th> SubTotal price </th>
                         </tr>
                       </thead>
                       <tbody>
-                        <?php foreach ($orders as $key => $order) { ?>
+                        <?php foreach ($orderItems as $item) { ?>
                                           
                         <tr>
                           <td>
-                            <?php echo $order['order_date']; ?>
+                            <?php echo $item['name']; ?>
                           </td>
-                          <td> <?php echo $order['status']; ?></td>
+                          <td> <?php echo $item['price']; ?></td>
                         
-                          <td> <?php echo $order['total_price']; ?></td>
-
-                      <td> <a type="button" href="showOrder.php?id=<?php echo $order['order_id']; ?>" class="btn btn-gradient-primary me-2">Show</a>
-                      <?php if($order['status'] == 'processing'){ ?>
-                        <button type="button" onClick="cancelOrder(<?php echo $order['order_id']; ?>)"class="btn btn-gradient-warning  text-dark">Cancel</button>
-                        
-                     <?php } ?>
-
-
-</td> </tr>
+                          <td> <?php echo $item['quantity']; ?></td>
+                          <td> <?php echo ($item['quantity']*$item['price']). ' EGP'; ?></td>
+ </tr>
 <?php } ?>
                       </tbody>
                     </table>
