@@ -42,14 +42,15 @@ $ext = $_POST['ext'];
     header("Location: register.php");
     exit();
   }
-  move_uploaded_file($f_path, '/cafe/assets/uploads/'.(time() - 1696070596).$f_name);
+  $img_path = 'assets/uploads/'.(time() - 1696070596).$f_name;
+  move_uploaded_file($f_path, $img_path);
 
 $user->_set('fullname',$name);
 $user->_set('email',$email);
 $user->_set('hashed_password',md5($password));
 $user->_set('room_no',$room);
 $user->_set('ext',$ext);
-$user->_set('profile_img','/cafe/assets/uploads/'.(time() - 1696070596).$f_name);
+$user->_set('profile_img','/cafe/'.$img_path);
 
 $result = $user->store();
 if($result === true){

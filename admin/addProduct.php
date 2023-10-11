@@ -31,7 +31,7 @@ $price = $_POST['price'];
     header("Location: products.php");
     exit();
   }
-  move_uploaded_file($f_path, '/cafe/assets/uploads/'.(time() - 1696070596).$f_name);
+  move_uploaded_file($f_path, '../assets/uploads/'.(time() - 1696070596).$f_name);
 
 $product->_set('name',$name);
 $product->_set('price',$price);

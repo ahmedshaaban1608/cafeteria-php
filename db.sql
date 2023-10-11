@@ -25,10 +25,10 @@ CREATE TABLE product_order (
     id INT PRIMARY KEY,
     user_id INT NOT NULL,
     status ENUM('done', 'processing', 'out of delivery') DEFAULT 'processing',
-    order_date TIMESTAMP NOT NULL,
+    order_date TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
     notes TEXT,
     room_no INT NOT NULL,
-    CONSTRAINT user_order_reference FOREIGN KEY (user_id) REFERENCES user(id),
+    CONSTRAINT user_order_reference FOREIGN KEY (user_id) REFERENCES user(id)  ON DELETE CASCADE,
     CONSTRAINT order_room_reference FOREIGN KEY (room_no) REFERENCES room(room_no)
 );
 
@@ -36,7 +36,7 @@ CREATE TABLE order_items (
     order_id INT NOT NULL,
     product_id INT NOT NULL,
     quantity INT UNSIGNED NOT NULL,
-    CONSTRAINT order_reference FOREIGN KEY (order_id) REFERENCES product_order(id),
+    CONSTRAINT order_reference FOREIGN KEY (order_id) REFERENCES product_order(id) ON DELETE CASCADE,
     CONSTRAINT product_reference FOREIGN KEY (product_id) REFERENCES product(id)
 );
 

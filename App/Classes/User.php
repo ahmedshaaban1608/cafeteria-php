@@ -15,7 +15,7 @@ class User extends Database{
     }
 
     public function getAll(){
-      $result= $this->runDML("SELECT * FROM user;");
+      $result= $this->runDML("SELECT * FROM user where type = 'user';");
       return $result->fetchAll(PDO::FETCH_ASSOC);
   }
   public function countAll(){
@@ -35,16 +35,24 @@ class User extends Database{
             } 
         }
     
-    public function update($id){}
+    public function update($id){
+        try {
+               
+            $this->runDML("UPDATE user SET fullname = '$this->fullname', profile_img = '$this->profile_img', room_no = $this->room_no, ext =  $this->ext WHERE id = $id");
+            return true;
+        } catch(Exception $e){
+            return $e->getMessage();
+        } 
+    }
     public function destroy($id){
         try {
-            $this->runDML("SELECT * FROM departments WHERE SSN=$id");
+            $this->runDML("DELETE FROM user WHERE id=$id");
         }catch(Exception $e){
             return $e->getMessage();
         } 
     }
     public function show($id){
-        $result=$this->runDML("SELECT * FROM user WHERE Dno=$id");
+        $result=$this->runDML("SELECT * FROM user WHERE id=$id");
         return $result->fetch(PDO::FETCH_ASSOC);
     }
     public function showByEmail($email){

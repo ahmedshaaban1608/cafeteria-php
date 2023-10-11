@@ -18,7 +18,51 @@
       unset($_SESSION["product_errors"]);
   }
   $product = new Product();
-  $products = $product->getAll();
+  $id = $_GET['id'];
+  $prod = $product->show($id);
+
+  if(isset($_POST['product-btn']) && $_SERVER["REQUEST_METHOD"] === "POST" ){
+
+    $name = $_POST['name'];
+    $price = $_POST['price'];
+    $img = $prod['img'];
+    
+    $error_arr = [];
+    if($_FILES['img']['name']){
+      $f_name = $_FILES['img']['name'];
+      $f_size = $_FILES['img']['size'];
+      $f_path = $_FILES['img']['tmp_name'];
+      $type_arr = explode(' ','jpg png jpeg webp gif');
+          $is_img = $product->fileValidator($f_name, $type_arr, $f_size, '2097152');
+          if(!$is_img) $error_arr['img']='must be a vaild image with size less than 2 MB';
+    }
+      $is_name = $product->validateName($name);
+      $is_price = $product->validateNumber($price);
+  
+      if(!$is_name) $error_arr['name']='invalid name';
+       if (!$is_price) $error_arr['price']='invalid price number';
+
+        
+      // redirect me if there is an error
+      if(count($error_arr)){
+      
+        $_SESSION['product_errors'] = $error_arr;
+        header("Location: editProduct.php?id=".$id);
+        exit();
+      }
+      if($_FILES['img']['name']){
+      move_uploaded_file($f_path, '../assets/uploads/'.(time() - 1696070596).$f_name);
+      $img = '/cafe/assets/uploads/'.(time() - 1696070596).$f_name;
+      }
+
+    $product->_set('name',$name);
+    $product->_set('price',$price);
+    $product->_set('img',$img);
+    
+    $product->update($id);
+    header("Location: products.php");
+    }
+
   ?>
   <!DOCTYPE html>
   <html lang="en">
@@ -55,17 +99,16 @@
                 <h3 class="page-title">
                   <span class="page-title-icon bg-gradient-primary text-white me-2">
                     <i class="mdi mdi-home"></i>
-                  </span> Products
+                  </span> Edit Product
                 </h3>
               
               </div>
               <div class="row">
                 <div class="col-12 bg-white mb-4 py-4">
-                  <h2 class="text-center">Add Product</h2>
-                  <form class="pt-3" action="addProduct.php" method="post" enctype="multipart/form-data">
+                  <form class="pt-3" method="post" enctype="multipart/form-data">
                        <div class="form-group">
                           <label for="name">product name <span>*</span></label>
-                          <input type="text" class="form-control mb-2" id="name" placeholder=" product name" name="name" required>
+                          <input type="text" class="form-control mb-2" id="name" placeholder=" product name" name="name" value="<?php echo $prod['name']; ?>" required>
                           <span class="text-danger"><?php if (
                               isset($error_arr["name"])
                           ) {
@@ -74,7 +117,7 @@
                         </div>
                       <div class="form-group">
                           <label for="price">price <span>*</span></label>
-                          <input type="number" class="form-control mb-2" id="price" placeholder="enter price" name="price" required>
+                          <input type="number" class="form-control mb-2" id="price" placeholder="enter price" name="price" value="<?php echo $prod['price']; ?>" required>
                           <span class="text-danger mt-2"><?php if (
                               isset($error_arr["price"])
                           ) {
@@ -83,9 +126,9 @@
                         </div>
                         <div class="form-group">
                           <label>product image  <span>*</span></label>
-                          <input type="file" name="img" class="file-upload-default">
+                          <input type="file" name="img" class="file-upload-default" value="<?php echo $prod['img']; ?>">
                           <div class="input-group col-xs-12">
-                            <input type="text" class="form-control file-upload-info mb-2" name="profile" disabled placeholder="Upload Image">
+                            <input type="text" class="form-control file-upload-info mb-2" name="profile" disabled placeholder="Upload Image" value="<?php echo $prod['img']; ?>">
                             <span class="input-group-append">
                               <button class="file-upload-browse btn btn-gradient-primary" type="button">Upload</button>
                             </span>
@@ -97,48 +140,13 @@
                           } ?></span>
                         </div>
                                             
-                    <input type="submit" name="product-btn" class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn w-100" value="Add product">
+                    <input type="submit" name="product-btn" class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn w-100" value="Edit product">
                 
                     </div>
                 
                     
                   </form>
   </div>
-  <div class="row">
-          <div class="col-12 bg-white p-3 table-responsive">
-          <table class="table table-striped">
-                        <thead>
-                          <tr>
-                            <th>image </th>
-                            <th> Product </th>
-                            <th> Price </th>
-                            <th style="width:300px!important;"> Action </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-               <?php foreach ($products as $product) { ?>
-                <tr>
-                            <td class="py-1">
-                              <img src="<?php echo $product['img']; ?>" alt="image" />
-                            </td>
-                            <td> <?php echo $product['name']; ?> </td>
-                          
-                            <td> <?php echo $product['price']; ?> EGP</td>
-                        <td class="d-flex">                    <button onclick="changeAvailabilty(<?php echo $product['id']; ?>, false)" type="button" class="btn btn-success me-2 px-2 <?php echo $product['is_available'] ? 'd-block' : 'd-none'; ?>">Available</button>
-  
-                        <button onclick="changeAvailabilty(<?php echo $product['id']; ?>, true)" type="button" class="btn btn-danger me-2 px-2 <?php echo !$product['is_available']? 'd-block' : 'd-none'; ?>">Not Available</button>     
-                        
-                        <button onClick="editProduct(<?php echo $product['id']; ?>)"  type="button" class="btn btn-primary px-2 me-2">Edit</button>
-                        <button  onClick="deleteProduct(<?php echo $product['id']; ?>)" type="button" class="btn btn-danger px-2 me-2">Delete</button>
-
-
-  </td> </tr>
-                <?php } ?>
-
-                        </tbody>
-                      </table>
-          </div>
-          </div>
             </div>
           
             </div>
@@ -169,19 +177,6 @@
       <script src="../assets/js/todolist.js"></script>
       <script src="../assets/js/file-upload.js"></script>
       <!-- End custom js for this page -->
-      <script>
-       function changeAvailabilty(productId, status) {
-  window.location.href = 'available.php?id=' + productId + '&status='+status;
-}
-function editProduct(productId) {
-  window.location.href = 'editProduct.php?id=' + productId;
-}
-function deleteProduct(productId) {
-  if(confirm('Are you sure?')){
-    window.location.href = 'deleteProduct.php?id=' + productId;
-  }
-}
-
-      </script>
+  
     </body>
   </html>

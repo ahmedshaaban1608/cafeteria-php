@@ -1,7 +1,4 @@
-<?php
- session_start(); 
 
- ?>
 <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
         <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
           <a class="navbar-brand brand-logo" href="index.php"><img src="/cafe/assets/images/logo.png" alt="logo" /></a>

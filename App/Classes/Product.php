@@ -15,7 +15,7 @@ class Product extends Database{
     }
 
     public function getAll(){
-      $result= $this->runDML("SELECT * FROM product;");
+      $result= $this->runDML("SELECT * FROM product where is_delete = false order by id desc;");
       return $result->fetchAll(PDO::FETCH_ASSOC);
   }
   public function countAll(){
@@ -35,10 +35,25 @@ class Product extends Database{
             } 
         }
     
-    public function update($id){}
+    public function update($id){
+        try {
+            $this->runDML("UPDATE product SET name = '$this->name', price = $this->price, img = '$this->img' WHERE id=$id");
+        }catch(Exception $e){
+            return $e->getMessage();
+        } 
+    }
+    
+    public function updateStatus($id, $status){
+        try {
+            $this->runDML("UPDATE product SET is_available = $status WHERE id=$id");
+        }catch(Exception $e){
+            return $e->getMessage();
+        } 
+    }
+
     public function destroy($id){
         try {
-            $this->runDML("SELECT * FROM departments WHERE SSN=$id");
+            $this->runDML("UPDATE product SET is_delete = true WHERE id=$id");
         }catch(Exception $e){
             return $e->getMessage();
         } 
