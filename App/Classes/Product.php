@@ -19,7 +19,7 @@ class Product extends Database{
       return $result->fetchAll(PDO::FETCH_ASSOC);
   }
   public function countAll(){
-    $result= $this->runDML("SELECT count(*) as 'count' FROM product;");
+    $result= $this->runDML("SELECT count(*) as 'count' FROM product where is_delete = false;");
     return $result->fetch(PDO::FETCH_ASSOC);
 }
 
