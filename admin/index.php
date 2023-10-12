@@ -107,6 +107,7 @@ $orders = $order->getAllProcessing();
                           <th>Room no</th>
                           <th>Ext</th>
                           <th> Total price </th>
+                          <th> notes </th>
                           <th> Action </th>
                         </tr>
                       </thead>
@@ -121,6 +122,7 @@ $orders = $order->getAllProcessing();
                           <td> <?php echo $orderData['room_no']; ?></td>
                           <td> <?php echo $orderData['ext']; ?></td>
                           <td> <?php echo $orderData['total_price']. ' EGP'; ?></td>
+                          <td> <?php echo $orderData['notes']; ?></td>
 
                       <td>
                         <button type="button" onClick="deliverOrder(<?php echo $orderData['order_id']; ?>)"class="btn btn-gradient-danger">Deliver</button>

@@ -104,7 +104,6 @@ $users = $user->getAll();
         <?php } ?>
     </tbody>
 </table>
-<input type="text" name="userid" readonly hidden value="<?php echo $loggedUser['id']; ?>">
 
 <div class="form-group">
 <textarea name="note" id="note" placeholder="order notes" rows="10" class="form-control"></textarea>

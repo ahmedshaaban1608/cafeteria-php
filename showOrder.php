@@ -86,6 +86,10 @@ $orderItems = $order->showOrderItems($id);
               <th>Total Price</th>
               <td><?php echo $orderData['total_price']. ' EGP'; ?></td>
             </tr>
+            <tr>
+              <th>Notes</th>
+              <td><?php echo $orderData['notes']; ?></td>
+            </tr>
           </table>
           <h3 class="text-center my-4">Order Items</h3>
         <table class="table table-striped">

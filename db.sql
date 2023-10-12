@@ -60,6 +60,7 @@ CREATE VIEW orders_view AS
 SELECT
     po.id AS order_id,
     po.order_date,
+    po.notes as notes,
     u.fullname AS user_name,
     po.status,
     r.room_no,
