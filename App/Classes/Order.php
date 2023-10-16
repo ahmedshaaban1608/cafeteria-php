@@ -13,9 +13,52 @@ class Order extends Database{
     }
 
     public function getAll(){
-      $result= $this->runDML("SELECT * FROM orders_view;");
+      $result= $this->runDML("SELECT * FROM orders_view");
       return $result->fetchAll(PDO::FETCH_ASSOC);
   }
+  public function getAllByUser($id, $startingDate = null, $endingDate = null) {
+    $query = "SELECT * FROM orders_view WHERE user_id = :user_id";
+    $params = [':user_id' => $id];
+
+    if ($startingDate) {
+        $query .= " AND order_date >= :startingDate";
+        $params[':startingDate'] = $startingDate;
+    }
+
+    if ($endingDate) {
+        $query .= " AND order_date <= :endingDate";
+        $params[':endingDate'] = $endingDate;
+    }
+
+    $result = $this->runDML($query, $params);
+    return $result->fetchAll(PDO::FETCH_ASSOC);
+}
+
+public function totalPriceByUser($user_id = null, $startingDate = null, $endingDate = null) {
+  $query = "SELECT user_id, user_name, SUM(total_price) as total_price FROM orders_view";
+  $params = [];
+
+  if ($user_id) {
+      $query .= " WHERE user_id = :user_id";
+      $params[':user_id'] = $user_id;
+  }
+
+  if ($startingDate) {
+      $query .= ($user_id ? " AND" : " WHERE") . " order_date >= :startingDate";
+      $params[':startingDate'] = $startingDate;
+  }
+
+  if ($endingDate) {
+      $query .= ($user_id || $startingDate ? " AND" : " WHERE") . " order_date <= :endingDate";
+      $params[':endingDate'] = $endingDate;
+  }
+
+  $query .= " GROUP BY user_name";
+
+  $result = $this->runDML($query, $params);
+  return $result->fetchAll(PDO::FETCH_ASSOC);
+}
+
   public function getAllProcessing(){
     $result= $this->runDML("SELECT * FROM orders_view where status = 'processing';");
     return $result->fetchAll(PDO::FETCH_ASSOC);

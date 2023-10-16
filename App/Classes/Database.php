@@ -14,13 +14,15 @@ class Database{
         }  
     }
 
-    public function runDML($stmt){
-        try{
-            return $this->connection->query($stmt);
-        }catch(Exception $e){
-            echo $e->getMessage();
-        }  
-   
-    }   
+      public function runDML($query, $params = []) {
+        $stmt = $this->connection->prepare($query);
+        
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+    
+        $stmt->execute();
+        return $stmt;
+    }
   
 }

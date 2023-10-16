@@ -24,9 +24,8 @@ $user = new user();
 $is_email = $user->validateEmail($email);
 if($is_email){
   $account = $user->showByEmail($email);
-  if(count($account) && $account['hashed_password'] === md5($password)){
+  if($account && $account['hashed_password'] === md5($password)){
     $_SESSION['user'] = $account;
-    var_dump($_SESSION['user']);  
 header('Location: index.php');
 exit();
   } else{

@@ -56,7 +56,13 @@ class User extends Database{
         return $result->fetch(PDO::FETCH_ASSOC);
     }
     public function showByEmail($email){
-        $result=$this->runDML("SELECT * FROM user WHERE email='$email'");
+        try {
+               
+            $result=$this->runDML("SELECT * FROM user WHERE email='$email'");
         return $result->fetch(PDO::FETCH_ASSOC);
+        } catch(Exception $e){
+           return false;
+        } 
+       
     }
 }

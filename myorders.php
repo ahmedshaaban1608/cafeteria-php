@@ -14,7 +14,7 @@ if (isset($_SESSION['user'])) {
 require_once 'vendor/autoload.php';
 use App\Classes\Order;
 $order = new Order();
-$orders = $order->getAll();
+$orders = $order->getAllByUser($loggedUser['id']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
